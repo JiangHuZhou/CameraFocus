@@ -13,7 +13,8 @@ public:
     HillClimbSearch();
     ~HillClimbSearch();
 
-    bool search(int rate);
+    bool    search(int rate);
+    bool    bigSearch(int rate);
 
 public:
 

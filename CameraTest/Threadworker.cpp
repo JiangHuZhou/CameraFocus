@@ -19,7 +19,7 @@ void ThreadWorker::grub()
     x_pCamera->GetWidth(&width);
     x_pCamera->GetHeight(&height);
 
-    qDebug()<<"width = "<<width<<"height = "<<height;
+    //qDebug()<<"width = "<<width<<"height = "<<height;
 
 
     BYTE *temp= new BYTE[width*height*3];
@@ -138,16 +138,16 @@ void ThreadWorker::autoFocus()
 
         //图像分析
         value = fm.focusMain(srcImage);
-
+        qDebug()<<"value = "<<value;
         rateFrame[count++] = value;
 
         if(count == 3)
         {
             count = 0;
             value = (rateFrame[0] + rateFrame[1] + rateFrame[2])/3;
-            qDebug()<<"value = "<<value;
+            qDebug()<<"avr value = "<<value;
 
-#if 1
+#if 0
             //调用搜索函数进行搜索
             bool isSuccess = hillsearch.search((int)(value + 0.5));
 

@@ -41,7 +41,7 @@ double FocusMeasure::focusMain(Mat srcc)
     //进行高斯滤波
     GaussianBlur(gray, gray, Size(7, 7), 0.8, 0.8);
 
-    double area = getArea_all(gray.clone());
+    double area = getArea_all(gray);
 
     return area;
 
@@ -624,18 +624,38 @@ double FocusMeasure::getArea_g(Mat src,vector<int> index)
 
 double FocusMeasure::getArea_all(Mat src)
 {
-    vector<vector<cv::Point> > contours;//定义点集存放集合
-    vector<cv::Vec4i> hierarchy;
-    //找到轮廓
+    //转为二值图
     Mat threshold_out;
     threshold(src,threshold_out,10,255,THRESH_BINARY);
     //imwrite("D:\\testImage\\20170515\\threshold2.bmp",threshold_out);
 
+    //遍历像素点,统计像素值为255的数量
+    int cols = threshold_out.cols;
+    int rows = threshold_out.rows;
+
+    unsigned int count = 0;
+
+    for(int i = 0; i < cols; i++)
+    {
+        for(int j = 0; j < rows; j++)
+        {
+            int value = (int)threshold_out.at<uchar>(j,i);
+            if(value == 255)
+            {
+                count++;
+            }
+        }
+    }
+    return count;
+
+
+/*  找到轮廓求点集的面积
+    vector<vector<cv::Point> > contours;//定义点集存放集合
+    vector<cv::Vec4i> hierarchy;
+
     findContours( threshold_out, contours, hierarchy,CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
 
     int length = (int)contours.size();
-
-    //cout << "after findContours() contours.size() = "<<length<<endl;
 
     double area = 0;//包围每个点集的矩形的面积
     //double areaAvr = 0;//每个区域点集的矩形面积
@@ -643,12 +663,10 @@ double FocusMeasure::getArea_all(Mat src)
     for(int i = 0; i < length; i++ )
     {
         //boundRect[i] = boundingRect(Mat(contours[i]));//计算点集最小包围矩形
-        area += fabs(contourArea(contours[i]));//求每个矩形的面积
+        area += fabs(contourArea(contours[i]));//求每个点集的面积
     }
-    //cout << "area = "<< area <<endl;
-    //areaAvr = area/length;
-    //cout << "areaAvr = " <<areaAvr<<endl;
     return area/length;
+*/
 }
 
 double FocusMeasure::rateFrame(Mat src)

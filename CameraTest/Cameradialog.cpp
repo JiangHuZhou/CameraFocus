@@ -3,13 +3,13 @@
 
 #include "Threadworker.h"
 #include "include/DTStageDriver.h"
-
+#include "hillclimbsearch.h"
 CameraDialog::CameraDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::CameraDialog)
 {
     ui->setupUi(this);
-    int size = style()->pixelMetric(QStyle::PM_ToolBarIconSize);
+    //int size = style()->pixelMetric(QStyle::PM_ToolBarIconSize);
     //QSize iconSize(size, size);
     //QToolButton *zoomInIcon = new QToolButton;
 //    this->ui->zoomInIcon->setAutoRepeat(true);
@@ -37,7 +37,7 @@ CameraDialog::CameraDialog(QWidget *parent) :
     ui->graphicsView->show();
 
     //相机参数
-    m_imagebuffernumber = 2;//图片buffer数量
+    m_imagebuffernumber = 10;//图片buffer数量
 
 
     //按钮初始化
@@ -411,7 +411,7 @@ void CameraDialog::on_btnConnectMotor_clicked()
 {
     int comm = this->ui->MotorCom->text().toInt();
 
-    int ret = DTInitStage(comm);
+    int ret = DTInitStage(comm,NULL);
     //DTInitStage函数使用之前,需连接好线路并启动电源
     if(ret < 0)
     {
@@ -492,7 +492,8 @@ void CameraDialog::connectMotorBtnSlots()
 
 void CameraDialog::on_btnBigFocus_clicked()
 {
-
+    HillClimbSearch search;
+    search.bigSearch(this->ui->BigStep->text().toInt());
     /*
 
 ///////////////////////////现有电动平台操作方法/////////////////////////////////

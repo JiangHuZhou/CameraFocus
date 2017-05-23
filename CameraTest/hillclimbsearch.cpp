@@ -45,6 +45,46 @@ bool HillClimbSearch::search(int rate)
 
 }
 
+bool HillClimbSearch::bigSearch(int rate)
+{
+    DTMoveSteps('Z',rate * def_Direction);//电机转动
+    return true;
+/*
+    if(rate <= 100)
+    {
+        //next_Step = def_MaxStep * 2;
+        //next_Direction = def_Direction;
+
+        DTMoveSteps('Z',def_MaxStep * 2 * def_Direction);//电机转动
+
+        //last_Step = next_Step;
+        //last_Direction = next_Direction;
+        return false;
+    }
+    else
+    {
+        if(rate > last_Value)
+        {
+            next_Step = def_MaxStep;
+            next_Direction = def_Direction;
+
+            last_Value = rate;
+            //last_Direction = next_Direction;
+            DTMoveSteps('Z',def_MaxStep * def_Direction);//电机转动
+
+            return false;
+        }
+        else
+        {
+            next_Step = def_MaxStep / 2;
+            DTMoveSteps('Z',next_Step * def_Direction);
+
+            return true;
+        }
+    }
+*/
+}
+
 bool HillClimbSearch::focusGetMax(int rate)
 {
     return false;
@@ -266,9 +306,60 @@ bool HillClimbSearch::focusGetMax(int rate)
 
 bool HillClimbSearch::focusGetMin(int rate)
 {
+    static int count = 0;
+    if(count == 0)
+    {
+
+        DTMoveSteps('Z',def_MaxStep * def_Direction);//电机转动
+        last_Step = def_MaxStep;
+        last_Direction = def_Direction;
+        last_Value = rate;
+        count++;
+        return false;
+    }
+    else
+    {
+        if(rate < last_Value)
+        {
+            //方向正确
+            next_Direction = last_Direction;
+
+            next_Step = (int)last_Step * 0.8;
+        }
+        else if(rate > last_Value)
+        {
+            //方向错误
+            next_Direction = last_Direction * -1;
+            next_Step = (int)last_Step * 0.75;
+        }
+
+        if((next_Step <= def_MinStep)||(rate == last_Value))
+        {
+            next_Step = def_MinStep;
+            DTMoveSteps('Z',next_Step * next_Direction);//电机转动
+
+            return true;
+        }
+        else
+        {
+            last_Step = next_Step;
+            last_Direction = next_Direction;
+            last_Value = rate;
+
+
+            DTMoveSteps('Z',next_Step * next_Direction);//电机转动
+
+            cout << "count = "<<count<<" next step = "<<next_Step * next_Direction<<endl;
+
+            count++;
+            return false;
+        }
+    }
+
+/*  连续三帧判断方向
     //static vector<int>     frame(3,0);    //保存每帧图像的清晰度值
     //连续采集3帧图像求平均值,用来表示一幅图像的rate
-    cout<< "rate =  "<< rate <<endl;
+    //cout<< "rate =  "<< rate <<endl;
     //cout <<"count = "<<count<<endl;
     //cout << "def_MinStep = "<<def_MinStep<<" def_MaxStep = "<<def_MaxStep<<endl;
     if(count < 3)
@@ -355,6 +446,7 @@ bool HillClimbSearch::focusGetMin(int rate)
             next_Direction = last_Direction * -1;
             next_Step = (int)last_Step * 0.75;
         }
+
         if((next_Step <= def_MinStep)||(rate == last_Value))
         {
             next_Step = def_MinStep;
@@ -377,29 +469,7 @@ bool HillClimbSearch::focusGetMin(int rate)
             return false;
         }
     }
-
-
-//    if(count < 3)
-//    {
-//        frame[count++] = rate;
-
-//        next_Direction = last_Direction;
-//        next_Step = last_Step;
-
-//        last_Step = next_Step;
-//        last_Direction = next_Direction;
-
-//        DTMoveSteps('Z',next_Step * next_Direction);//电机转动
-
-//        if(count == 3)
-//        {
-
-
-//            count = 0;
-//        }
-//        return false;
-//    }
-
+*/
 
     return false;
 }
