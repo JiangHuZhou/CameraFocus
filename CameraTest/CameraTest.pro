@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,7 +17,8 @@ SOURCES += main.cpp\
     Threadworker.cpp \
     Focusmeasure.cpp \
     hillclimbsearch.cpp \
-    searchthread.cpp
+    searchthread.cpp \
+    dosql.cpp
 
 
 HEADERS  += Cameradialog.h \
@@ -36,7 +37,8 @@ HEADERS  += Cameradialog.h \
     Focusmeasure.h \
     hillclimbsearch.h \
     include/DTStageDriver.h \
-    searchthread.h
+    searchthread.h \
+    dosql.h
 
 FORMS    += Cameradialog.ui
 

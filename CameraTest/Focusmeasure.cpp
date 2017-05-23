@@ -3,13 +3,7 @@
 FocusMeasure::FocusMeasure()
 {
     G_MAXAREA = 500000;
-    G_THRESH = 20;
-
-
-    tl.x = 0;
-    tl.y = 0;
-    br.x = 0;
-    br.y = 0;
+    G_THRESH = 10;
 
     p_x1 = 0;
     p_x2 = 0;
